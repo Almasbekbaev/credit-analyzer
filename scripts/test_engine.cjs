@@ -1,0 +1,24 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const source = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
+const start = source.indexOf('function loanSchedule');
+const end = source.indexOf('function calculate()');
+assert.ok(start >= 0 && end > start, 'Calculation engine not found');
+const test = new Function(`${source.slice(start, end)}
+  const s = loanSchedule(15000, 19, 60, 'annuity');
+  if (s.length !== 60 || Math.abs(s[0].payment - 389.10826713) > 0.01) throw new Error('Annuity calculation failed');
+  if (Math.abs(s.reduce((sum, p) => sum + p.principal, 0) - 15000) > 0.001) throw new Error('Principal reconciliation failed');
+  if (Math.abs(s[59].balance) > 0.001) throw new Error('Loan is not fully repaid');
+  const d = loanSchedule(1200, 12, 12, 'diff');
+  if (Math.abs(d[0].payment - 112) > 0.001 || Math.abs(d[11].payment - 101) > 0.001) throw new Error('Differentiated schedule failed');
+  const cfs = [-1000, 600, 600];
+  if (Math.abs(npv(cfs, 0.1) - 41.32231405) > 0.0001) throw new Error('NPV failed');
+  if (Math.abs(irr(cfs) - 0.1306623863) > 0.000001) throw new Error('IRR failed');
+  if (Math.abs(payback(cfs) - 1.66666667) > 0.0001) throw new Error('Simple payback failed');
+  if (Math.abs(payback(cfs, 0.1) - 1.9166666667) > 0.0001) throw new Error('Discounted payback failed');
+  if (irr([-100, 10, -5]) !== null) throw new Error('IRR without a sign change must return null');
+  if (payback([-1000, 100, 100]) !== null) throw new Error('Non-repayable project must return null');
+  return 'Engine tests: 9 checks passed';
+`);
+console.log(test());

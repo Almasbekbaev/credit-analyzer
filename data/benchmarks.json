@@ -1,0 +1,130 @@
+{
+  "meta": {
+    "updated": "2026-11-07",
+    "source": "Экспертная калибровка на базе открытой статистики (Росстат, отраслевые обзоры). Медианные значения для РФ, приблизительные.",
+    "cbrKeyRate": 16.5,
+    "cbrKeyRateDate": "2026-11-07"
+  },
+  "industries": [
+    {
+      "id": "production",
+      "name": "Производство",
+      "riskClass": "neutral",
+      "keywords": ["производство", "завод", "промышленность", "выпуск продукции", "металлургия", "машиностроение"],
+      "medians": {
+        "currentRatio": 1.6,
+        "autonomy": 0.42,
+        "ros": 8.0,
+        "debtEbitda": 2.4,
+        "dsoDays": 55,
+        "dscr": 1.4,
+        "loanRate": 19.0
+      }
+    },
+    {
+      "id": "trade",
+      "name": "Оптовая и розничная торговля",
+      "riskClass": "neutral",
+      "keywords": ["торговля", "ритейл", "розница", "опт", "маркетплейс", "продажи"],
+      "medians": {
+        "currentRatio": 1.3,
+        "autonomy": 0.30,
+        "ros": 4.5,
+        "debtEbitda": 3.0,
+        "dsoDays": 35,
+        "dscr": 1.3,
+        "loanRate": 20.0
+      }
+    },
+    {
+      "id": "construction",
+      "name": "Строительство",
+      "riskClass": "risky",
+      "keywords": ["строительство", "застройщик", "девелопмент", "недвижимость", "подряд", "стройка"],
+      "medians": {
+        "currentRatio": 1.2,
+        "autonomy": 0.25,
+        "ros": 6.0,
+        "debtEbitda": 3.5,
+        "dsoDays": 75,
+        "dscr": 1.2,
+        "loanRate": 21.0
+      }
+    },
+    {
+      "id": "transport",
+      "name": "Транспорт и логистика",
+      "riskClass": "neutral",
+      "keywords": ["транспорт", "логистика", "перевозки", "грузоперевозки", "склад", "флот"],
+      "medians": {
+        "currentRatio": 1.3,
+        "autonomy": 0.32,
+        "ros": 6.5,
+        "debtEbitda": 3.0,
+        "dsoDays": 45,
+        "dscr": 1.3,
+        "loanRate": 20.0
+      }
+    },
+    {
+      "id": "it",
+      "name": "IT и связь",
+      "riskClass": "stable",
+      "keywords": ["IT", "ИТ", "софт", "программное обеспечение", "связь", "цифровые технологии", "разработка"],
+      "medians": {
+        "currentRatio": 1.8,
+        "autonomy": 0.55,
+        "ros": 14.0,
+        "debtEbitda": 1.8,
+        "dsoDays": 40,
+        "dscr": 1.6,
+        "loanRate": 18.0
+      }
+    },
+    {
+      "id": "agriculture",
+      "name": "Сельское хозяйство",
+      "riskClass": "neutral",
+      "keywords": ["сельское хозяйство", "агро", "урожай", "фермер", "растениеводство", "животноводство"],
+      "medians": {
+        "currentRatio": 1.5,
+        "autonomy": 0.38,
+        "ros": 9.0,
+        "debtEbitda": 3.2,
+        "dsoDays": 50,
+        "dscr": 1.3,
+        "loanRate": 19.5
+      }
+    },
+    {
+      "id": "services",
+      "name": "Услуги",
+      "riskClass": "stable",
+      "keywords": ["услуги", "консалтинг", "сервис", "обслуживание", "аутсорсинг"],
+      "medians": {
+        "currentRatio": 1.5,
+        "autonomy": 0.45,
+        "ros": 10.0,
+        "debtEbitda": 2.2,
+        "dsoDays": 40,
+        "dscr": 1.4,
+        "loanRate": 19.5
+      }
+    },
+    {
+      "id": "hospitality",
+      "name": "Общепит и гостиницы",
+      "riskClass": "risky",
+      "keywords": ["общепит", "ресторан", "кафе", "гостиница", "отель", "общественное питание", "фастфуд"],
+      "medians": {
+        "currentRatio": 1.1,
+        "autonomy": 0.28,
+        "ros": 5.5,
+        "debtEbitda": 3.2,
+        "dsoDays": 10,
+        "dscr": 1.2,
+        "loanRate": 21.5
+      }
+    }
+  ]
+}

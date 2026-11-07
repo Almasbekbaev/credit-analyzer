@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кредитный аналитик — анализ целесообразности финансирования</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="app-header no-print">
+  <div class="container header-inner">
+    <div class="brand">
+      <span class="brand-mark">◈</span>
+      <div>
+        <h1 class="brand-title">Кредитный аналитик</h1>
+        <p class="brand-sub">Анализ целесообразности финансирования бизнес-проектов</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="btnDemo" class="btn btn-ghost" type="button">Пример с данными</button>
+      <button id="btnNew" class="btn btn-ghost" type="button">Новый проект</button>
+      <button id="btnPrint" class="btn btn-primary" type="button">Печать / PDF</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ====== ВВОД ДАННЫХ ====== -->
+  <section id="inputSection" class="no-print">
+
+    <div class="card saved-card">
+      <div class="saved-header">
+        <h2 class="card-title">Сохранённые проекты</h2>
+      </div>
+      <div id="savedList" class="saved-list"><p class="muted">Нет сохранённых проектов</p></div>
+    </div>
+
+    <form id="inputForm" autocomplete="off" novalidate>
+
+      <div class="card">
+        <h2 class="card-title">Проект</h2>
+        <div class="grid grid-3">
+          <label class="field">
+            <span class="field-label">Название проекта</span>
+            <input type="text" name="projectName" placeholder="ООО «Пример» — расширение цеха">
+          </label>
+          <label class="field">
+            <span class="field-label">Отрасль</span>
+            <select name="industry"></select>
+          </label>
+          <label class="field">
+            <span class="field-label">Дата анализа</span>
+            <input type="date" name="analysisDate">
+          </label>
+          <label class="field">
+            <span class="field-label">Горизонт планирования (лет)</span>
+            <input type="number" name="horizon" min="3" max="10" step="1" value="5">
+          </label>
+          <label class="field">
+            <span class="field-label">Ставка дисконтирования (%)</span>
+            <input type="number" name="discountRate" min="0" max="100" step="0.1" value="22">
+          </label>
+          <div class="field">
+            <span class="field-label">Сегмент заёмщика</span>
+            <div class="segment-row">
+              <span id="segmentBadge" class="badge badge-neutral">—</span>
+              <label class="override">
+                <select id="segmentOverride">
+                  <option value="">Авто (по выручке)</option>
+                  <option value="micro">Микро</option>
+                  <option value="small">Малый</option>
+                  <option value="medium">Средний</option>
+                  <option value="large">Крупный</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Параметры кредита</h2>
+        <div class="grid grid-4">
+          <label class="field">
+            <span class="field-label">Сумма кредита (тыс. ₽)</span>
+            <input type="number" name="loanAmount" min="0" step="1" placeholder="15000">
+          </label>
+          <label class="field">
+            <span class="field-label">Ставка (% годовых)</span>
+            <input type="number" name="loanRate" min="0" max="100" step="0.1" placeholder="19">
+          </label>
+          <label class="field">
+            <span class="field-label">Срок (мес.)</span>
+            <input type="number" name="loanTerm" min="1" max="360" step="1" placeholder="60">
+          </label>
+          <div class="field">
+            <span class="field-label">Тип графика</span>
+            <div class="radio-row" role="radiogroup" aria-label="Тип графика">
+              <label class="radio"><input type="radio" name="scheduleType" value="annuity" checked> Аннуитет</label>
+              <label class="radio"><input type="radio" name="scheduleType" value="diff"> Дифференцированный</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Баланс (тыс. ₽)</h2>
+        <div class="grid grid-3">
+          <label class="field"><span class="field-label">Денежные средства</span><input type="number" name="cash" min="0" step="1"></label>
+          <label class="field"><span class="field-label">Дебиторская задолженность</span><input type="number" name="receivables" min="0" step="1"></label>
+          <label class="field"><span class="field-label">Запасы</span><input type="number" name="inventory" min="0" step="1"></label>
+          <label class="field"><span class="field-label">Прочие оборотные активы</span><input type="number" name="otherCurrent" min="0" step="1"></label>
+          <label class="field"><span class="field-label">Внеоборотные активы</span><input type="number" name="fixedAssets" min="0" step="1"></label>
+          <label class="field"><span class="field-label">Краткосрочные обязательства</span><input type="number" name="shortDebt" min="0" step="1"></label>
+          <label class="field"><span class="field-label">Долгосрочные обязательства</span><input type="number" name="longDebt" min="0" step="1"></label>
+          <label class="field"><span class="field-label">Собственный капитал</span><input type="number" name="equity" step="1"></label>
+        </div>
+        <div id="balanceWarning" class="balance-warning" hidden></div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Отчёт о прибылях и убытках (тыс. ₽/год)</h2>
+        <div class="grid grid-3">
+          <label class="field"><span class="field-label">Выручка</span><input type="number" name="revenue" min="0" step="1"></label>
+          <label class="field"><span class="field-label">Себестоимость</span><input type="number" name="cogs" min="0" step="1"></label>
+          <label class="field"><span class="field-label">Прочие операционные расходы</span><input type="number" name="opex" min="0" step="1"></label>
+          <label class="field"><span class="field-label">Амортизация</span><input type="number" name="depreciation" min="0" step="1"></label>
+          <label class="field"><span class="field-label">Проценты к уплате</span><input type="number" name="interestExpense" min="0" step="1"></label>
+          <label class="field"><span class="field-label">Чистая прибыль</span><input type="number" name="netIncome" step="1"></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Прогноз денежных потоков проекта (тыс. ₽/год)</h2>
+        <div id="cashflowInputs" class="grid grid-5"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Настройки рейтинга</h2>
+        <div class="grid grid-3">
+          <label class="field">
+            <span class="field-label">LGD — доля потерь при дефолте (%)</span>
+            <input type="number" name="lgd" min="0" max="100" step="1" value="45">
+          </label>
+          <div class="field">
+            <span class="field-label">Рыночный контекст</span>
+            <p id="dataFreshness" class="muted small">Загрузка…</p>
+          </div>
+        </div>
+        <details class="overrides">
+          <summary>Переопределить отраслевые бенчмарки</summary>
+          <div id="benchmarkOverrides" class="grid grid-4 overrides-grid"></div>
+          <p class="muted small">Оставьте поле пустым, чтобы использовать значение из справочника.</p>
+        </details>
+      </div>
+
+    </form>
+  </section>
+
+  <!-- ====== РЕЗУЛЬТАТЫ ====== -->
+  <section id="results" aria-live="polite">
+    <div id="emptyState" class="empty-state">
+      <p>Заполните форму — расчёт выполняется автоматически по мере ввода.</p>
+    </div>
+
+    <div id="resultsContent" hidden>
+
+      <div class="print-header only-print">
+        <h1 id="printTitle">Кредитный анализ</h1>
+        <p id="printDate"></p>
+      </div>
+
+      <div class="verdict-grid">
+        <div class="card verdict-card" id="verdictCard">
+          <div class="verdict-score"><span id="verdictScore">—</span><span class="verdict-max">/100</span></div>
+          <div id="verdictText" class="verdict-text">—</div>
+          <div id="verdictNote" class="verdict-note"></div>
+        </div>
+
+        <div class="card rating-card" id="ratingCard">
+          <div class="rating-class" id="ratingClass">—</div>
+          <div class="rating-pd">PD: <strong id="ratingPD">—</strong> год</div>
+          <div class="rating-zone" id="ratingZone">—</div>
+          <div class="rating-el" id="ratingEL">—</div>
+          <div class="rating-scale" id="ratingScale" aria-hidden="true"></div>
+          <ul class="rating-adjustments" id="ratingAdjustments"></ul>
+        </div>
+      </div>
+
+      <div class="tabs no-print" role="tablist" aria-label="Разделы результатов">
+        <button class="tab active" role="tab" aria-selected="true" aria-controls="tabRatios" id="tabBtnRatios" data-tab="tabRatios">Коэффициенты</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="tabInvest" id="tabBtnInvest" data-tab="tabInvest">Инвестиции</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="tabBenchmark" id="tabBtnBenchmark" data-tab="tabBenchmark">Отрасль</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="tabNews" id="tabBtnNews" data-tab="tabNews">Контекст</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="tabRecommend" id="tabBtnRecommend" data-tab="tabRecommend">Рекомендации</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="tabConclusion" id="tabBtnConclusion" data-tab="tabConclusion">Заключение</button>
+      </div>
+
+      <div id="tabRatios" class="tab-panel" role="tabpanel" aria-labelledby="tabBtnRatios">
+        <div class="card">
+          <h2 class="card-title">Коэффициенты кредитоспособности</h2>
+          <div class="table-wrap">
+            <table class="data-table" id="ratiosTable">
+              <thead><tr><th>Показатель</th><th>Значение</th><th>Норматив</th><th>Оценка</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <h2 class="card-title">DSCR по годам</h2>
+          <div id="dscrChart" class="chart-wrap"></div>
+          <div class="table-wrap">
+            <table class="data-table" id="dscrTable">
+              <thead><tr><th>Год</th><th>Денежный поток, тыс. ₽</th><th>Долговое обслуживание, тыс. ₽</th><th>DSCR</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="tabInvest" class="tab-panel" role="tabpanel" aria-labelledby="tabBtnInvest" hidden>
+        <div class="card">
+          <h2 class="card-title">Инвестиционные показатели</h2>
+          <div class="stat-grid" id="investStats"></div>
+        </div>
+        <div class="card">
+          <h2 class="card-title">График платежей по кредиту</h2>
+          <div id="paymentChart" class="chart-wrap"></div>
+          <div class="table-wrap table-scroll">
+            <table class="data-table" id="paymentTable">
+              <thead><tr><th>Месяц</th><th>Платёж</th><th>Проценты</th><th>Основной долг</th><th>Остаток</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="tabBenchmark" class="tab-panel" role="tabpanel" aria-labelledby="tabBtnBenchmark" hidden>
+        <div class="card">
+          <h2 class="card-title">Сравнение с отраслевой медианой <span id="benchmarkIndustry" class="muted"></span></h2>
+          <div class="table-wrap">
+            <table class="data-table" id="benchmarkTable">
+              <thead><tr><th>Показатель</th><th>Заёмщик</th><th>Медиана отрасли</th><th>Отклонение</th><th>Оценка</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="muted small" id="benchmarkSource"></p>
+          <div id="benchmarkComment"></div>
+        </div>
+      </div>
+
+      <div id="tabNews" class="tab-panel" role="tabpanel" aria-labelledby="tabBtnNews" hidden>
+        <div class="card">
+          <h2 class="card-title">Рыночный контекст <span id="newsIndustry" class="muted"></span></h2>
+          <p class="muted small">Новости носят информационный характер и не влияют на скоринг. <span id="newsDate"></span></p>
+          <ul class="news-list" id="newsList"></ul>
+        </div>
+      </div>
+
+      <div id="tabRecommend" class="tab-panel" role="tabpanel" aria-labelledby="tabBtnRecommend" hidden>
+        <div class="card">
+          <h2 class="card-title">Рекомендации по минимизации рисков</h2>
+          <p class="muted small">Формируются автоматически по слабым местам анализа. Носят справочный характер.</p>
+          <div id="recommendations"></div>
+        </div>
+      </div>
+
+      <div id="tabConclusion" class="tab-panel" role="tabpanel" aria-labelledby="tabBtnConclusion" hidden>
+        <div class="card">
+          <h2 class="card-title">Заключение</h2>
+          <div id="conclusion"></div>
+          <p class="disclaimer">Заключение формируется автоматически и не заменяет решение кредитного комитета. PD — оценочная, калибрована на типовых уровнях рынка, не обучена на портфеле конкретного банка; для боевого использования требуется бэк-тестирование на исторических дефолтах.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="app-footer no-print">
+  <div class="container">
+    <p class="muted small">Данные проектов хранятся локально в браузере и никуда не передаются. v1.1</p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
